@@ -4,7 +4,6 @@
    ['d', 'e']
  ]
 
- //console.log(arr)
  const MaxItemAssociation = function (arr) {
 
    let accumMax = []
@@ -20,7 +19,7 @@
      for (let j = 0; j < arr.length; j++) {
        const prod2 = arr[j]
        //пропускаем одинаковые массивы
-       if (prod == prod2) {
+       if (prod === prod2) {
          continue
        }
        //Если элемент в prod находится в prod2){запиши значение в accumMax}
@@ -76,6 +75,8 @@
  }
 
  console.log(MaxItemAssociation(arr1))
+
+
 
 
 
