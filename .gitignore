@@ -1,1 +1,7 @@
 .DS_store
+src
+package-lock.json
+package.json
+prettier.config.js
+webpack.config.js
+node_modules
