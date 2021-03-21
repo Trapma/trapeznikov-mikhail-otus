@@ -1,5 +1,5 @@
 .DS_store
-src
+
 package-lock.json
 package.json
 prettier.config.js
