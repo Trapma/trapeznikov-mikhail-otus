@@ -1,105 +1,101 @@
 class MyTree extends HTMLElement {
-  open() {}
-
-  render(obj) {
+  constructor() {
+    super();
     this.attachShadow({
       mode: 'open',
     });
+  }
+  //если нет data создает пустой тэг
+  renderEmptyTag() {}
 
-    function tree(obj) {
-      let tree = obj;
-      let text = '';
+  renderDomTree(obj) {
+    let text = '';
 
-      function getTree(tree) {
-        text += `\n <my-branch`;
-        for (const i in tree) {
-          if (Object.hasOwnProperty.call(tree, i)) {
-            const branch = tree[i];
-            if (Array.isArray(branch)) {
-              for (const i of branch) {
-                text += '>';
-                getTree(i);
-                text += '>';
-                text += `</my-branch`;
-              }
-            } else {
-              text += ` ${i} = '${branch}'`;
+    //генерация дерева
+    function getTree(tree) {
+      text += `\n <my-branch`;
+      for (const i in tree) {
+        if (Object.hasOwnProperty.call(tree, i)) {
+          const branch = tree[i];
+          if (Array.isArray(branch)) {
+            for (const i of branch) {
+              text += '>';
+              getTree(i);
+              text += '>';
+              text += `</my-branch`;
             }
+          } else {
+            text += ` ${i} = '${branch}'`;
           }
         }
-        return text;
       }
-      getTree(tree);
       return text;
     }
-    return (this.shadowRoot.innerHTML = tree(obj));
+
+    return (this.shadowRoot.innerHTML = getTree(obj));
   }
   connectedCallback() {
     if (!this.rendered) {
-      if (this.data) {
-        let objTree1 = this.data;
-        this.render(objTree1);
+        let obj = this.data;
+        this.renderDomTree(obj);
         this.rendered = true;
-      }
-      this.open();
-      this.rendered = true;
+
     }
   }
   static get observedAttributes() {
-    // (3)
-    return [
-      'data'
-    ];
+    // следит за data
+    return ['data'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    // (4)
-    this.render();
+    // рендерит дерево если 'data' изменилась
+    this.renderDomTree();
   }
 }
 
 customElements.define('my-tree', MyTree);
 
-// const objTree = {
-//   id: 1,
-//   class: '1234',
-//   items: [
-//     {
-//       id: 2,
-//       items: [
-//         {
-//           id: 3,
-//           items: [
-//             {
-//               id: 3,
-//               class: '123',
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//     {
-//       id: 2,
-//       items: [
-//         {
-//           id: 3,
-//           class: '123',
-//         },
-//       ],
-//     },
-//     {
-//       id: 2,
-//       items: [
-//         {
-//           id: 3,
-//         },
-//       ],
-//     },
-//   ],
-// };
-
+const objTree = {
+  id: 1,
+  class: '1234',
+  items: [
+    {
+      id: 2,
+      items: [
+        {
+          id: 3,
+          items: [
+            {
+              id: 3,
+              class: '123',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 2,
+      items: [
+        {
+          id: 3,
+          class: '123',
+        },
+      ],
+    },
+    {
+      id: 2,
+      items: [
+        {
+          id: 3,
+        },
+      ],
+    },
+  ],
+};
+// создаем кастомный тэг
 // const tree = new MyTree()
+// добавляем объект
 // tree.data = objTree
+// добавляем на страницу
 // document.querySelector('h1').insertAdjacentElement('afterend', tree);
 module.exports = MyTree;
-
