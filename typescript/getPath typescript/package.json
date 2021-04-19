@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "jest script.ts",
+    "test": "jest",
     "tsc" : "tsc script.ts"
   },
   "devDependencies": {
