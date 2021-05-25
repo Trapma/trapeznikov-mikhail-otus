@@ -1,0 +1,33 @@
+result =  { arrFile: [], arrDir: [] }
+test
+test dir src, and his path index.html,style.scss,testDir,testDir2
+[ 'src/index.html' ]
+[ 'src/index.html', 'src/style.scss' ]
+[ 'src/testDir' ]
+test folder src/testDir
+[ 'src/testDir', 'src/testDir2' ]
+test folder src/testDir2
+test dir src/testDir, and his path test.txt
+test dir src/testDir2, and his path 123,321,test1.txt
+[ 'src/index.html', 'src/style.scss', 'src/testDir/test.txt' ]
+[
+  'src/index.html',
+  'src/style.scss',
+  'src/testDir/test.txt',
+  'src/testDir2/123'
+]
+[
+  'src/index.html',
+  'src/style.scss',
+  'src/testDir/test.txt',
+  'src/testDir2/123',
+  'src/testDir2/321'
+]
+[
+  'src/index.html',
+  'src/style.scss',
+  'src/testDir/test.txt',
+  'src/testDir2/123',
+  'src/testDir2/321',
+  'src/testDir2/test1.txt'
+]
