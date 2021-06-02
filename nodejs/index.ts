@@ -1,7 +1,6 @@
 import path = require("path");
 import fs = require("fs");
 
-
 /**
  * 1) зайти в папку и просмотреть все файлы
  * 2) добавить файлы в массив arrFiles, а папки в arrFolders
@@ -20,67 +19,72 @@ let test = "src";
 //создадим массивы для записи файлов и папок
 //мне нужна функция которая отсортирует файлы и папки, а затем вернет готовый результат
 
-function root(dir: string, calback:any) {
-  let arrFile: string[] = [];
-  let arrDir: string[] = [];
+function root(dir: string) {
+  return new Promise<{ arrFile: string[]; arrDir: string[] }>(
+    (resolve, reject) => {
+      let arrFile: string[] = [];
+      let arrDir: string[] = [];
 
-  //счетчик для отслеживания рекурсии
-  let countTree = 0;
+      //счетчик для отслеживания рекурсии
+      let countTree = 0;
 
-  let recFunc = function (dir: string) {
-    const copyCountTree = countTree;
-    // console.log('test start recFunc');
+      let recFunc = function (dir: string) {
+        const copyCountTree = countTree;
+        // console.log('test start recFunc');
 
-    //читаем папку
-    fs.readdir(dir, async (err, files) => {
-      if (err) {
-        throw new Error("READDIR_ERROR");
-      }
-
-      if (files === undefined) {
-        console.log("files === undefined");
-        return console.log({ arrFile, arrDir });
-      }
-      // console.log(files);
-     await files.forEach((el, i) => {
-        //для каждого файла мы должны создать путь, который будет принимать функция стат
-        let pathEl = path.join(dir, el);
-        // console.log("проверка счетчиков. CopyCountTree = " + copyCountTree + ", CountTree = " + countTree);
-        // console.log("files.forEach, el = ", pathEl);
-        fs.stat(pathEl, (err, stats) => {
+        //читаем папку
+        fs.readdir(dir, async (err, files) => {
           if (err) {
-            throw new Error("STAT_ERROR");
+            throw new Error("READDIR_ERROR");
           }
 
-          if (stats.isFile()) {
-            // arrFile = [...arrFile, pathEl];
-            arrFile.push(pathEl);
-            if ((i === files.length - 1) && (copyCountTree === countTree)) {
-              console.log(`i = ${i}, files.length -1 = ${files.length - 1} && copyCountTree = ${copyCountTree}, countTree = ${countTree}`);
-
-              let result = JSON.stringify({ arrFile, arrDir });
-              calback(result)
-
-            }
-            // console.log(arrFile);
+          if (files === undefined) {
+            console.log("files === undefined");
+            return console.log({ arrFile, arrDir });
           }
-          if (stats.isDirectory()) {
-            // arrDir = [...arrDir, pathEl];
-            arrDir.push(pathEl);
-            countTree++;
-            recFunc(pathEl);
-          }
+          // console.log(files);
+          files.forEach((el, i) => {
+            //для каждого файла мы должны создать путь, который будет принимать функция стат
+            let pathEl = path.join(dir, el);
+            // console.log("проверка счетчиков. CopyCountTree = " + copyCountTree + ", CountTree = " + countTree);
+            // console.log("files.forEach, el = ", pathEl);
+            fs.stat(pathEl, (err, stats) => {
+              if (err) {
+                throw new Error("STAT_ERROR");
+              }
+
+              if (stats.isFile()) {
+                // arrFile = [...arrFile, pathEl];
+                arrFile.push(pathEl);
+                if (i === files.length - 1 && copyCountTree === countTree) {
+                  console.log(
+                    `i = ${i}, files.length -1 = ${
+                      files.length - 1
+                    } && copyCountTree = ${copyCountTree}, countTree = ${countTree}`
+                  );
+
+                  // let result = JSON.stringify({ arrFile, arrDir });
+                  resolve({ arrFile, arrDir });
+                }
+                // console.log(arrFile);
+              }
+              if (stats.isDirectory()) {
+                // arrDir = [...arrDir, pathEl];
+                arrDir.push(pathEl);
+                countTree++;
+                recFunc(pathEl);
+              }
+            });
+          });
         });
-      });
-    });
-  }
+      };
 
-  recFunc(dir)
-  setTimeout(() => {
-    console.log('setTimeout',JSON.stringify({ arrFile, arrDir }));
-  }, 500);
+      recFunc(dir);
+      //проверка setTimeout
+      setTimeout(() => {
+        console.log("setTimeout", JSON.stringify({ arrFile, arrDir }));
+      }, 500);
+    }
+  );
 }
-root(test, function (result:any) {
-  console.log('test result = ',result);
-
-});
+root(test).then((result) => console.log(`result = ${JSON.stringify(result)}`));
