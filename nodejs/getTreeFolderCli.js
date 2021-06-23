@@ -1,4 +1,3 @@
-
 const fs = require('fs')
 const path = require('path')
 const util = require('util')
@@ -6,8 +5,12 @@ const util = require('util')
 const readdir = util.promisify(fs.readdir)
 const stat = util.promisify(fs.stat)
 
+//Папку которую нужно найти
+const findFolder = process.argv[2]
 
- function check(dir) {
+
+
+async function check(dir) {
 
     let obj = {
         arrFile: [],
@@ -16,7 +19,8 @@ const stat = util.promisify(fs.stat)
 
     let check = 0
 
-    async function find (dir, obj) {
+    async function find(dir, obj) {
+
         let tree = obj
 
         const dirInfoArray = await readdir(dir)
@@ -49,7 +53,34 @@ const stat = util.promisify(fs.stat)
             }
         }
     }
-    return find(dir, obj)
+
+    const root = await find(dir, obj)
+
+    return { root }
 }
 
-check('src').then(result => console.log(result))
+
+
+//проверка на папку
+if (findFolder === undefined){
+    console.log('Воспользуйтесь командой -- help для детальной информации');
+}
+if (findFolder === 'help') {
+    console.log(`
+    что бы узнать информацию по функции используйте -- info
+    что бы воспользоваться функцией используйте -- nameFolder`);
+}
+if(findFolder === 'info'){
+    console.log(`Функция просматривает папку и выводит массивы папок и файлов в виде одного объекта`);
+}
+if (findFolder !== 'help' && (findFolder !== undefined) && (findFolder !== 'info')) {
+    fs.readdir(findFolder, (err, files) => {
+        if (err) throw Error('Не правильный путь папки')
+
+        if (files.length - 1 > 0) {
+            check(findFolder).then(result => console.log(result))
+        }
+
+    })
+
+}

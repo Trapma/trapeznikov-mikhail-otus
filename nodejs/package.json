@@ -1,28 +1,17 @@
 {
-  "name": "peso4nitsa",
+  "name": "get-tree-folder-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "gets all files and folders in the specified directory",
   "main": "./src/index.ts",
-
   "scripts": {
-    "dev-server": "webpack serve --mode development",
-    "test": "jest",
-    "tree": "node index.js",
-    "tsc": "tsc index.ts",
-    "dev": "ts-node index.ts"
+    "test ": "...",
+    "tree": "node getTreeFolderCli.js"
   },
-  "author": "",
+  "author": "trapma",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^14.14.41",
-    "fetch": "^1.1.0",
-    "ts-node": "^9.1.1",
-    "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2"
   },
   "devDependencies": {
-    "jest": "^27.0.1",
-    "nodemon": "^2.0.7",
-    "typescript": "^4.2.4"
+
   }
 }
