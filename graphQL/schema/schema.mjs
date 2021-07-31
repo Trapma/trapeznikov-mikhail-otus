@@ -7,8 +7,6 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
-  graphql,
-  GraphQLInputObjectType,
 } from "graphql";
 
 // подключаем данные
