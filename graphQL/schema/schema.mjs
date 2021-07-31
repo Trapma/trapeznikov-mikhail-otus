@@ -7,6 +7,7 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLInputObjectType,
 } from "graphql";
 
 // подключаем данные
@@ -181,6 +182,20 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
+const UserInput = new GraphQLInputObjectType({
+  name:"UserInput",
+  description: "user data for input",
+  fields: () => ({
+    id: {type: new GraphQLNonNull(GraphQLID)},
+    username: { type: new GraphQLNonNull(GraphQLString)  },
+    firstName: { type: new GraphQLNonNull(GraphQLString) },
+    lastName: { type: new GraphQLNonNull(GraphQLString)},
+    email: { type: new GraphQLNonNull(GraphQLString) },
+    phone: { type: new GraphQLNonNull(GraphQLInt) },
+    age: { type: new GraphQLNonNull(GraphQLInt) },
+  })
+})
+
 
 const Mutations = new GraphQLObjectType({
   name: "Mutations",
@@ -188,32 +203,27 @@ const Mutations = new GraphQLObjectType({
     addUser: {
       type: userType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        username: { type: GraphQLString },
-        firstName: { type:new GraphQLNonNull(GraphQLString) },
-        lastName: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type:new GraphQLNonNull(GraphQLString)  },
-        phone: { type:new GraphQLNonNull(GraphQLInt)  },
-        age: { type: new GraphQLNonNull(GraphQLInt) },
+        input: {type: UserInput}
       },
-      resolve(parent, args) {
+      resolve: function (parent, args) {
         let user = {
-          id: args.id,
-          username: args.username,
-          firstName: args.firstName,
-          lastName: args.lastName,
-          fullName: args.fullName,
-          email: args.email,
-          phone: args.phone,
-          age: args.age,
-          comments: args.comments,
+          id: args.input.id,
+          username: args.input.username,
+          firstName: args.input.firstName,
+          lastName: args.input.lastName,
+          email: args.input.email,
+          phone: args.input.phone,
+          age: args.input.age,
         };
+
+        // console.log(args.id, args.username, agrs.firstName);
         //из за локальной бд напишем проверку на id
         if (users.find((user) => user.id === args.id)) {
           return console.error("duplicate id");
         }
         users.push(user);
-        return users.find((user) => user.id === args.id);
+        console.log(users);
+        return users.find((user) => user.id === args.input.id);
       },
     },
   },
